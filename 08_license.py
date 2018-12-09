@@ -17,6 +17,6 @@ def value(node):
     c, m = node
     return sum(value(c[i - 1]) for i in m if 1 <= i <= len(c)) if c else sum(m)
 
-root = parse(deque(map(int, sys.stdin.read().split())))
+root = parse(deque(map(int, sys.stdin.readline().split())))
 print(addmeta(root))
 print(value(root))

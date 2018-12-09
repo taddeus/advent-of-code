@@ -18,6 +18,6 @@ def play(nplayers, last):
 
     return max(scores)
 
-nplayers, lastmarble = map(int, sys.stdin.read().split()[::6])
+nplayers, lastmarble = map(int, sys.stdin.readline().split()[::6])
 print(play(nplayers, lastmarble))
 print(play(nplayers, lastmarble * 100))
