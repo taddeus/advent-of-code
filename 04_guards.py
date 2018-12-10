@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-import sys, re
+import sys
+import re
 
 patterns = {}
 for line in sorted(sys.stdin):

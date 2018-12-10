@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys
-changes = [int(line) for line in sys.stdin]
+changes = list(map(int, sys.stdin))
 
 print(sum(changes))
 

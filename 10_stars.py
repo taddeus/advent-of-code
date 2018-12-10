@@ -17,9 +17,9 @@ while h < prevh:
 for i in range(len(x)):
     x[i] -= dx[i]
     y[i] -= dy[i]
+points = set(zip(x, y))
 
 print('message after', t, 'seconds:')
-points = set(zip(x, y))
 for py in range(min(y), max(y) + 1):
     print(''.join('#' if (px, py) in points else '.'
           for px in range(min(x), max(x) + 1)))
