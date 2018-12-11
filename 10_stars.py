@@ -21,5 +21,5 @@ points = set(zip(x, y))
 
 print('message after', t, 'seconds:')
 for py in range(min(y), max(y) + 1):
-    print(''.join('#' if (px, py) in points else '.'
+    print(''.join('#' if (px, py) in points else ' '
           for px in range(min(x), max(x) + 1)))
