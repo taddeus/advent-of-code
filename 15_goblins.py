@@ -4,9 +4,10 @@ from operator import attrgetter
 from collections import defaultdict
 
 SPACE, WALL = 0, 1
+GOBLINS, ELVES = 0, 1
 
 class Unit:
-    counts = defaultdict(int)
+    counts = [0, 0]
 
     def __init__(self, pos, team, ap):
         self.pos = pos
@@ -101,7 +102,7 @@ def parse(f):
             elif c in '.':
                 grid.append(SPACE)
             else:
-                grid.append(Unit(y * w + x, c, 3))
+                grid.append(Unit(y * w + x, ELVES if c == 'E' else GOBLINS, 3))
         w = x + 1
     return grid, w
 
@@ -119,8 +120,7 @@ def show():
         for x in range(w):
             cell = grid[y * w + x]
             if cell not in (WALL, SPACE):
-                color = red if cell.team == 'G' else green
-                t = color(cell.team)
+                t = green('E') if cell.team == ELVES else red('G')
                 hps.append('%s(%d)' % (t, cell.hp))
                 line += t
             else:
@@ -147,24 +147,24 @@ def simulate(ap):
     except BattleLost as lost:
         print(clear + 'after', rounds, 'rounds with', ap, 'ap:')
         show()
-        winner = 'Goblins' if lost.team == 'E' else 'Elves'
-        return winner, rounds, sum(u.hp for u in units if u.hp > 0)
+        return lost.team, rounds, sum(u.hp for u in units if u.hp > 0)
 
 def reset(elf_ap):
-    Unit.counts.clear()
+    Unit.counts = [0, 0]
     grid = []
     units = []
     for i, cell in enumerate(startgrid):
         if cell in (SPACE, WALL):
             grid.append(cell)
         else:
-            unit = Unit(i, cell.team, elf_ap if cell.team == 'E' else 3)
+            unit = Unit(i, cell.team, elf_ap if cell.team == ELVES else 3)
             grid.append(unit)
             units.append(unit)
     return grid, units
 
-def report(winner, rounds, hp, ap):
+def report(loser, rounds, hp, ap):
     print('Combat ends after', rounds, 'full rounds with', ap, 'attack power:')
+    winner = 'Goblins' if loser == ELVES else 'Elves'
     print(winner, 'win with', hp, 'hit points left')
     print('Outcome:', rounds, '*', hp, '=', rounds * hp)
 
@@ -172,18 +172,18 @@ def report(winner, rounds, hp, ap):
 elf_ap = 3
 startgrid, w = parse(sys.stdin)
 grid, units = reset(elf_ap)
-startelves = sum(1 for u in units if u.team == 'E')
-winner, rounds, hp = outcome3 = simulate(elf_ap)
+startelves = sum(1 for u in units if u.team == ELVES)
+outcome = outcome3 = simulate(elf_ap)
 
 # part 2
 numelves = 0
-while winner != 'Elves' or numelves != startelves:
+while numelves != startelves:
     elf_ap += 1
     grid, units = reset(elf_ap)
-    winner, rounds, hp = simulate(elf_ap)
-    numelves = sum(1 for u in units if u.team == 'E')
+    outcome = simulate(elf_ap)
+    numelves = sum(1 for u in units if u.team == ELVES)
 
 report(*outcome3, 3)
 print()
 print('Elves need', elf_ap, 'attack power not to let any elf die:')
-report(winner, rounds, hp, elf_ap)
+report(*outcome, elf_ap)
