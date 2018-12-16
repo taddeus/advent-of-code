@@ -5,10 +5,6 @@ from collections import defaultdict
 
 SPACE, WALL = 0, 1
 
-class BattleLost(Exception):
-    def __init__(self, team):
-        self.team = team
-
 class Unit:
     counts = defaultdict(int)
 
@@ -91,6 +87,10 @@ class Unit:
         if len(shortest):
             return min(shortest.values())[-1]
 
+class BattleLost(Exception):
+    def __init__(self, team):
+        self.team = team
+
 def parse(f):
     grid = []
     w = 0
@@ -108,6 +108,7 @@ def parse(f):
 def show():
     def red(text):
         return '\x1b[31m' + text + '\x1b[0m'
+
     def green(text):
         return '\x1b[32m' + text + '\x1b[0m'
 
@@ -162,16 +163,17 @@ def reset(elf_ap):
             units.append(unit)
     return grid, units
 
+def report(winner, rounds, hp, ap):
+    print('Combat ends after', rounds, 'full rounds with', ap, 'attack power:')
+    print(winner, 'win with', hp, 'hit points left')
+    print('Outcome:', rounds, '*', hp, '=', rounds * hp)
+
+# part 1
 elf_ap = 3
 startgrid, w = parse(sys.stdin)
 grid, units = reset(elf_ap)
 startelves = sum(1 for u in units if u.team == 'E')
-
-# part 1
-winner, rounds, hp = simulate(elf_ap)
-print('Combat ends after', rounds, 'full rounds:')
-print(winner, 'win with', hp, 'hit points left')
-print('Outcome:', rounds, '*', hp, '=', rounds * hp)
+winner, rounds, hp = outcome3 = simulate(elf_ap)
 
 # part 2
 numelves = 0
@@ -181,7 +183,7 @@ while winner != 'Elves' or numelves != startelves:
     winner, rounds, hp = simulate(elf_ap)
     numelves = sum(1 for u in units if u.team == 'E')
 
-print('Elves need', elf_ap, 'attack power not to let any elf die')
-print('Combat ends after', rounds, 'full rounds:')
-print(winner, 'win with', hp, 'hit points left')
-print('Outcome:', rounds, '*', hp, '=', rounds * hp)
+report(*outcome3, 3)
+print()
+print('Elves need', elf_ap, 'attack power not to let any elf die:')
+report(winner, rounds, hp, elf_ap)
