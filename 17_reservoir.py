@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 
-SAND, CLAY, DROP, STILL = 1, 2, 4, 8
+SAND, CLAY, DROP, STILL = 0, 1, 2, 4
 WALL = CLAY | STILL
 WATER = DROP | STILL
 
@@ -37,7 +37,7 @@ def show(grid, w):
     source = grid.index(DROP)
     print('.' * source + '+' + '.' * (w - source - 1))
     for y in range(len(grid) // w):
-        print(''.join('.#|~'[x] for x in grid[y * w:(y + 1) * w]))
+        print(''.join('.#| ~'[x] for x in grid[y * w:(y + 1) * w]))
 
 def flow(grid, w):
     h = len(grid) // w
