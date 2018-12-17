@@ -36,7 +36,7 @@ for effect in effects.split('\n\n'):
     reg = tuple(map(int, before[9:-1].split(', ')))
     opcode, a, b, out = map(int, inst.split())
     expect = tuple(map(int, after[9:-1].split(', ')))
-    mnems = set(mnem for mnem, exe in isa.items() if run(exe, a, b, reg) == expect)
+    mnems = set(m for m, exe in isa.items() if run(exe, a, b, reg) == expect)
     opcodes[opcode] &= mnems
     three += int(len(mnems) >= 3)
 
