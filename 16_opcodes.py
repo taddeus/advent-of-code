@@ -50,7 +50,7 @@ while sum(map(len, opcodes)) > len(isa):
             for other, mnems in enumerate(opcodes):
                 if other != opcode:
                     mnems.discard(certain)
-opcodes = [next(iter(mnems)) for mnems in opcodes]
+opcodes = [mnems.pop() for mnems in opcodes]
 
 reg = [0, 0, 0, 0]
 for inst in program.split('\n'):
