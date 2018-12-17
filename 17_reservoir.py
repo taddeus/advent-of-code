@@ -69,8 +69,8 @@ def flow(grid, w):
 
                 # break condition above checks fow clay and water, but we only
                 # keep flowing through sand
-                lflow = not lwall and grid[left] == SAND
-                rflow = not rwall and grid[right] == SAND
+                lflow = grid[left] == SAND
+                rflow = grid[right] == SAND
 
                 if lflow and rflow:
                     # flow continues on both ends, fork
