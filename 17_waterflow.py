@@ -19,7 +19,7 @@ def parse():
     xmin = min(min(min(r[:2]) for r in ranges), 500) - padding
     ymin = min(min(r[2:]) for r in ranges)
     ranges = [(xstart - xmin, xend - xmin, ystart - ymin, yend - ymin)
-            for xstart, xend, ystart, yend in ranges]
+              for xstart, xend, ystart, yend in ranges]
 
     w = max(max(r[:2]) for r in ranges) + 1 + 2 * padding
     h = max(max(r[2:]) for r in ranges) + 1
