@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import sys
-from collections import defaultdict
 
 isa = {
     'addr': lambda a, b, reg: reg[a] + reg[b],

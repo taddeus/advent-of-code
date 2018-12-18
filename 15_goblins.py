@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import sys
 from operator import attrgetter
-from collections import defaultdict
 
 SPACE, WALL = 0, 1
 GOBLINS, ELVES = 0, 1
