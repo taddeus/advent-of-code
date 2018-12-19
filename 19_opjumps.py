@@ -27,7 +27,6 @@ def parse_insts(f):
         yield opcode, a, b, out
 
 line = sys.stdin.readline()[:-1]
-assert line.startswith('#ip ')
 ip = int(line[4:])
 program = list(parse_insts(sys.stdin))
 
@@ -36,14 +35,19 @@ reg = [0, 0, 0, 0, 0, 0]
 
 while reg[ip] < len(program):
     opcode, a, b, out = program[reg[ip]]
+    #print('%-35s' % reg, opcode, a, b, out)
     reg[out] = isa[opcode](a, b, reg)
     reg[ip] += 1
 
 print(reg[0])
 
 # part 2
-def simulate(reg5):
-    return sum(0 if reg5 % reg1 else reg1 for reg1 in range(1, reg5 + 1))
+reg = [1, 0, 0, 0, 0, 0]
 
-assert simulate(864) == reg[0]
-print(simulate(10551264))
+while reg[ip] != 1:
+    opcode, a, b, out = program[reg[ip]]
+    reg[out] = isa[opcode](a, b, reg)
+    reg[ip] += 1
+
+n = reg[5]
+print(sum(0 if n % reg1 else reg1 for reg1 in range(1, n + 1)))
