@@ -35,7 +35,6 @@ reg = [0, 0, 0, 0, 0, 0]
 
 while reg[ip] < len(program):
     opcode, a, b, out = program[reg[ip]]
-    #print('%-35s' % reg, opcode, a, b, out)
     reg[out] = isa[opcode](a, b, reg)
     reg[ip] += 1
 
