@@ -32,7 +32,7 @@ def shortest_paths(graph, source):
     dist[source] = 0
 
     while Q:
-        u = min(Q, key=lambda x: dist[x])
+        u = min(Q, key=dist.__getitem__)
         Q.remove(u)
         for v in graph[u]:
             if v in Q:
