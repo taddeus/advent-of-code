@@ -20,7 +20,7 @@ def parse(regex):
             x, y = cur
             vertex = x + dx, y + dy
             graph.setdefault(cur, []).append(vertex)
-            graph.setdefault(vertex, [])
+            graph.setdefault(vertex, []).append(cur)
             cur = vertex
 
     return graph
