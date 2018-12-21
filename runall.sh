@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 interp=${1-python3}
+trap exit SIGINT
 i=1
 for f in *.py
 do
