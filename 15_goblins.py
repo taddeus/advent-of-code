@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from operator import attrgetter
+from heapq import heapify, heappush, heappop
 
 SPACE, WALL = 0, 1
 GOBLINS, ELVES = 0, 1
@@ -46,24 +47,29 @@ class Unit:
         return True
 
     def step_to_nearest_enemy(self):
-        source = self.pos
-        Q = set(i for i, cell in enumerate(grid) if cell == SPACE)
-        Q.add(source)
-        size = max(Q) + 1
         inf = len(grid) + 1
+        source = self.pos
+        Q = [(0, source)]
+        for v, cell in enumerate(grid):
+            if v != source:
+                if cell == SPACE:
+                    heappush(Q, (inf, v))
+        size = max(v for d, v in Q) + 1
         dist = [inf] * size
         dist[source] = 0
         prev = [None] * size
 
         while Q:
-            u = min(Q, key=lambda x: (dist[x], x))
-            Q.remove(u)
+            udist, u = heappop(Q)
+            if udist > dist[u]:
+                continue
             for v in (u - w, u - 1, u + 1, u + w):
-                if v in Q:
-                    alt = dist[u] + 1
+                if grid[v] == SPACE:
+                    alt = udist + 1
                     if alt < dist[v]:
                         dist[v] = alt
                         prev[v] = u
+                        heappush(Q, (alt, v))
 
         def adjacent_enemies(v):
             if dist[v] < inf and grid[v] == SPACE:
@@ -128,24 +134,27 @@ def show():
             line += '   ' + ', '.join(hps)
         print(line)
 
-def simulate(ap):
+def simulate(ap, verbose):
     global units
     rounds = 0
     clear = '\033c'
     try:
-        print(clear + 'after 0 rounds with', ap, 'ap:')
-        show()
+        if verbose:
+            print(clear + 'after 0 rounds with', ap, 'ap:')
+            show()
         while True:
             for unit in units:
                 if unit.hp > 0 and not unit.fight() and unit.move():
                     unit.fight()
             units = sorted((u for u in units if u.hp > 0), key=attrgetter('pos'))
             rounds += 1
+            if verbose:
+                print(clear + 'after', rounds, 'rounds with', ap, 'ap:')
+                show()
+    except BattleLost as lost:
+        if verbose:
             print(clear + 'after', rounds, 'rounds with', ap, 'ap:')
             show()
-    except BattleLost as lost:
-        print(clear + 'after', rounds, 'rounds with', ap, 'ap:')
-        show()
         return lost.team, rounds, sum(u.hp for u in units if u.hp > 0)
 
 def reset(elf_ap):
@@ -169,17 +178,18 @@ def report(loser, rounds, hp, ap):
 
 # part 1
 elf_ap = 3
+verbose = len(sys.argv) == 2 and sys.argv[-1] == '-v'
 startgrid, w = parse(sys.stdin)
 grid, units = reset(elf_ap)
 startelves = sum(1 for u in units if u.team == ELVES)
-outcome = outcome3 = simulate(elf_ap)
+outcome = outcome3 = simulate(elf_ap, verbose)
 
 # part 2
 numelves = 0
 while numelves != startelves:
     elf_ap += 1
     grid, units = reset(elf_ap)
-    outcome = simulate(elf_ap)
+    outcome = simulate(elf_ap, verbose)
     numelves = sum(1 for u in units if u.team == ELVES)
 
 report(*outcome3, 3)

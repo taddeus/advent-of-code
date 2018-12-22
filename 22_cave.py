@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
+from heapq import heapify, heappush, heappop
 depth = 6084
 tx, ty = target = 14, 709
+#depth = 510
+#tx, ty = target = 10, 10
 
 def scan(pad):
     def erode(geo_index):
@@ -27,21 +30,22 @@ def scan(pad):
     return grid, w
 
 def shortest_path(graph, source, target):
-    Q = set(i for i, nb in enumerate(graph) if nb)
-    inf = 1 << 32
-    dist = len(graph) * [inf]
+    dist = len(graph) * [1 << 32]
     dist[source] = 0
+    Q = [(dist[v], v) for v, nb in enumerate(graph) if nb]
+    heapify(Q)
 
     while Q:
-        u = min(Q, key=dist.__getitem__)
+        udist, u = heappop(Q)
+        if udist > dist[u]:
+            continue
         if u == target:
-            return dist[u]
-        Q.remove(u)
+            return udist
         for v, weight in graph[u]:
-            if v in Q:
-                alt = dist[u] + weight
-                if alt < dist[v]:
-                    dist[v] = alt
+            alt = udist + weight
+            if alt < dist[v]:
+                dist[v] = alt
+                heappush(Q, (alt, v))
 
 def rescue(grid, w):
     # approach:
