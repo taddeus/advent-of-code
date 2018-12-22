@@ -2,7 +2,7 @@
 interp=${1-python3}
 trap exit SIGINT
 i=1
-for f in *.py
+for f in [012]*.py
 do
     echo "-- problem $i -----------------------------------"
     cmd="`which time` -f 'elapsed: %E' $interp $f"
