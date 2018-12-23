@@ -35,13 +35,12 @@ def shortest_paths(graph, source):
 
     while Q:
         udist, u = heappop(Q)
-        if udist > dist[u]:
-            continue
-        for v in graph[u]:
-            alt = udist + 1
-            if alt < dist[v]:
-                dist[v] = alt
-                heappush(Q, (alt, v))
+        if udist == dist[u]:
+            for v in graph[u]:
+                alt = udist + 1
+                if alt < dist[v]:
+                    dist[v] = alt
+                    heappush(Q, (alt, v))
 
     return dist
 

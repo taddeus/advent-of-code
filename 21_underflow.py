@@ -40,7 +40,8 @@ def run():
             reg[ip] = 8
 
 def simulate():
-    r0 = r3 = r4 = 0
+    #r0 = 0
+    r3 = r4 = 0
     while True:
         r3 = r4 | 65536
         r4 = 4332021

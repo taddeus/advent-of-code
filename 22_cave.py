@@ -37,15 +37,14 @@ def shortest_path(graph, source, target):
 
     while Q:
         udist, u = heappop(Q)
-        if udist > dist[u]:
-            continue
-        if u == target:
-            return udist
-        for v, weight in graph[u]:
-            alt = udist + weight
-            if alt < dist[v]:
-                dist[v] = alt
-                heappush(Q, (alt, v))
+        if udist == dist[u]:
+            if u == target:
+                return udist
+            for v, weight in graph[u]:
+                alt = udist + weight
+                if alt < dist[v]:
+                    dist[v] = alt
+                    heappush(Q, (alt, v))
 
 def rescue(grid, w):
     # approach:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from operator import attrgetter
-from heapq import heapify, heappush, heappop
+from heapq import heappush, heappop
 
 SPACE, WALL = 0, 1
 GOBLINS, ELVES = 0, 1
@@ -61,15 +61,14 @@ class Unit:
 
         while Q:
             udist, u = heappop(Q)
-            if udist > dist[u]:
-                continue
-            for v in (u - w, u - 1, u + 1, u + w):
-                if grid[v] == SPACE:
-                    alt = udist + 1
-                    if alt < dist[v]:
-                        dist[v] = alt
-                        prev[v] = u
-                        heappush(Q, (alt, v))
+            if udist == dist[u]:
+                for v in (u - w, u - 1, u + 1, u + w):
+                    if grid[v] == SPACE:
+                        alt = udist + 1
+                        if alt < dist[v]:
+                            dist[v] = alt
+                            prev[v] = u
+                            heappush(Q, (alt, v))
 
         def adjacent_enemies(v):
             if dist[v] < inf and grid[v] == SPACE:
