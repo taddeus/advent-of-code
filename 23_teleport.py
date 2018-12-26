@@ -31,8 +31,7 @@ bestisect = opt.maximize(nisect)
 # minimize: manhattan distance of solution to (0, 0, 0)
 bestdist = opt.minimize(dist(x, y, z, 0, 0, 0))
 
-#print(opt)
 assert opt.check() == z3.sat
-print(opt.model())
+#print(opt.model())
 print('best teleportation point at %s from origin (%s nanobots in range)' %
       (bestdist.value(), bestisect.value()))
