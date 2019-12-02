@@ -4,7 +4,6 @@ from operator import add, mul
 
 def run(p):
     pc = 0
-    opcode = p[pc]
     while p[pc] != 99:
         opcode, in1, in2, out = p[pc:pc + 4]
         op = add if opcode == 1 else mul
