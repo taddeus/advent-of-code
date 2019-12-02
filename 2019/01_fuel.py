@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-import fileinput
-masses = [int(line) for line in fileinput.input()]
+import sys
 
 def fuel(mass):
     return int(mass / 3) - 2
@@ -14,5 +13,6 @@ def fuelrec(mass):
         f = fuel(mass)
     return total
 
+masses = [int(line) for line in sys.stdin]
 print(sum(map(fuel, masses)))
 print(sum(map(fuelrec, masses)))
