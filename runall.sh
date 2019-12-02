@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
-interp=${1-python3}
+python=${PYTHON:-python3}
 trap exit SIGINT
-i=1
-for f in [012]*.py
-do
-    echo "-- problem $i -----------------------------------"
-    cmd="`which time` -f 'elapsed: %E' $interp $f"
-    if [ -e input/$i ]
-    then cmd+=" < input/$i"
-    fi
-    eval $cmd
-    echo
-    i=$((i + 1))
+for dir in "$@"; do
+    i=1
+    for f in $dir/[012]*.py
+    do
+        echo "-- dir $dir -- problem $i ----------------------------"
+        cmd="`which time` -f 'elapsed: %E' $python $f"
+        if [ -e $dir/input/$i ]
+        then cmd+=" < $dir/input/$i"
+        fi
+        eval $cmd
+        echo
+        i=$((i + 1))
+    done
 done
