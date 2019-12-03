@@ -5,12 +5,10 @@ def fuel(mass):
     return mass // 3 - 2
 
 def fuelrec(mass):
-    f = fuel(mass)
-    total = 0
+    total = f = 0
     while f >= 0:
         total += f
-        mass = f
-        f = fuel(mass)
+        mass = f = fuel(mass)
     return total
 
 masses = [int(line) for line in sys.stdin]
