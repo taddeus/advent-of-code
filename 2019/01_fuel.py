@@ -2,7 +2,7 @@
 import sys
 
 def fuel(mass):
-    return int(mass / 3) - 2
+    return mass // 3 - 2
 
 def fuelrec(mass):
     f = fuel(mass)
