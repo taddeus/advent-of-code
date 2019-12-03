@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys
-from heapq import heapify, heappush, heappop
+from heapq import heappush, heappop
 
 def parse(regex):
     graph = {}
@@ -27,18 +27,18 @@ def parse(regex):
     return graph
 
 def shortest_paths(graph, source):
-    inf = 1 << 32
-    dist = {v: inf for v in graph}
-    dist[source] = 0
-    Q = [(dist[v], v) for v in graph]
-    heapify(Q)
+    dist = {source: 0}
+    Q = [(0, source)]
+    visited = {source}
 
     while Q:
         udist, u = heappop(Q)
-        if udist == dist[u]:
-            for v in graph[u]:
+        for v in graph[u]:
+            if v not in visited:
+                visited.add(v)
                 alt = udist + 1
-                if alt < dist[v]:
+                known = dist.get(v, None)
+                if known is None or alt < known:
                     dist[v] = alt
                     heappush(Q, (alt, v))
 

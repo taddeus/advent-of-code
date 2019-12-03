@@ -47,38 +47,33 @@ class Unit:
         return True
 
     def step_to_nearest_enemy(self):
-        inf = len(grid) + 1
         source = self.pos
+        dist = {source: 0}
+        prev = {}
         Q = [(0, source)]
-        for v, cell in enumerate(grid):
-            if v != source:
-                if cell == SPACE:
-                    heappush(Q, (inf, v))
-        size = max(v for d, v in Q) + 1
-        dist = [inf] * size
-        dist[source] = 0
-        prev = [None] * size
+        visited = {source}
 
         while Q:
             udist, u = heappop(Q)
-            if udist == dist[u]:
-                for v in (u - w, u - 1, u + 1, u + w):
-                    if grid[v] == SPACE:
-                        alt = udist + 1
-                        if alt < dist[v]:
-                            dist[v] = alt
-                            prev[v] = u
-                            heappush(Q, (alt, v))
+            for v in (u - w, u - 1, u + 1, u + w):
+                if grid[v] == SPACE and v not in visited:
+                    visited.add(v)
+                    alt = udist + 1
+                    known = dist.get(v, None)
+                    if known is None or alt < known:
+                        dist[v] = alt
+                        prev[v] = u
+                        heappush(Q, (alt, v))
 
         def adjacent_enemies(v):
-            if dist[v] < inf and grid[v] == SPACE:
+            if v in dist and grid[v] == SPACE:
                 for nb in (v - w, v - 1, v + 1, v + w):
                     u = grid[nb]
                     if u not in (WALL, SPACE) and u.team != self.team and u.hp > 0:
                         yield u
 
         shortest = {}
-        for v, d in enumerate(dist):
+        for v, d in dist.items():
             for u in adjacent_enemies(v):
                 step = v
                 pathlen = 1
