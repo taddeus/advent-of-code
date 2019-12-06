@@ -17,11 +17,7 @@ def count_orbits(graph, root):
     return dfs(root, 0, set())
 
 def shortest_path(graph, a, b):
-    parents = {}
-    for planet, moons in graph.items():
-        for moon in moons:
-            parents[moon] = planet
-
+    parents = {node: p for p, nodes in graph.items() for node in nodes}
     def find_root(node):
         yield node
         if node in parents:
@@ -30,8 +26,8 @@ def shortest_path(graph, a, b):
     path_a = {node: dist for dist, node in enumerate(find_root(a))}
     for dist, node in enumerate(find_root(b)):
         if node in path_a:
-            return path_a[node] + dist
+            return path_a[node] + dist - 2
 
 graph = read_graph(sys.stdin)
 print(count_orbits(graph, 'COM'))
-print(shortest_path(graph, 'YOU', 'SAN') - 2)
+print(shortest_path(graph, 'YOU', 'SAN'))
