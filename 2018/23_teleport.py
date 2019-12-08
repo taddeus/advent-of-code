@@ -2,8 +2,7 @@
 import sys
 import re
 import z3
-from functools import reduce
-from operator import itemgetter, add
+from operator import itemgetter
 
 bots = [tuple(map(int, re.findall(r'-?[0-9]+', line))) for line in sys.stdin]
 
@@ -24,8 +23,8 @@ x, y, z = z3.Ints('x y z')
 opt = z3.Optimize()
 
 # maximize: number of intersecting bots
-nisect = reduce(add, (z3.If(dist(bx, by, bz, x, y, z) <= br, 1, 0)
-                      for bx, by, bz, br in bots))
+nisect = sum(z3.If(dist(bx, by, bz, x, y, z) <= br, 1, 0)
+             for bx, by, bz, br in bots)
 bestisect = opt.maximize(nisect)
 
 # minimize: manhattan distance of solution to (0, 0, 0)
