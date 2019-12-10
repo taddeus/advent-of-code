@@ -18,4 +18,4 @@ for start in reversed(range(0, len(pix), w * h)):
             img[i] = pix[start + i]
 
 for start in range(0, w * h, w):
-    print(''.join(' x'[img[start + i]] for i in range(w)))
+    print(''.join(' @'[img[start + i]] for i in range(w)))
