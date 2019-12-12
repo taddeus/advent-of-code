@@ -25,9 +25,8 @@ def sim(axis):
         yield pos, vel
 
 def energy_after(moons, steps):
-    x, y, z = zip(*moons)
-    axes = next(islice(zip(sim(x), sim(y), sim(z)), steps - 1, steps))
-    pos, vel = zip(*axes)
+    sims = zip(*map(sim, zip(*moons)))
+    pos, vel = zip(*next(islice(sims, steps - 1, steps)))
     return sum(abssum(p) * abssum(v) for p, v in zip(zip(*pos), zip(*vel)))
 
 def axis_cycle(axis):
