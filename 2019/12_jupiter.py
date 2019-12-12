@@ -27,16 +27,15 @@ def sim(axis):
 def energy_after(moons, steps):
     x, y, z = zip(*moons)
     axes = next(islice(zip(sim(x), sim(y), sim(z)), steps - 1, steps))
-    pos, vel = (tuple(zip(*i)) for i in zip(*axes))
-    return sum(abssum(p) * abssum(v) for p, v in zip(pos, vel))
+    pos, vel = zip(*axes)
+    return sum(abssum(p) * abssum(v) for p, v in zip(zip(*pos), zip(*vel)))
 
 def axis_cycle(axis):
     seen = {}
     for step, (pos, vel) in enumerate(sim(axis)):
-        ident = tuple(chain(pos, vel))
-        if ident in seen:
-            return step - seen[ident]
-        seen[ident] = step
+        prevstep = seen.setdefault(tuple(pos + vel), step)
+        if prevstep != step:
+            return step - prevstep
 
 def find_cycle(moons):
     x, y, z = zip(*moons)
