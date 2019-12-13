@@ -66,8 +66,7 @@ def play(code, verbose):
     game = run(code, lambda: xball - xpaddle, 1000)
     grid, score = makegrid(game)
     ypaddle = next(y for y, row in enumerate(grid) if 3 in row)
-    xball = xpaddle = 0
-    ball_right = True
+    xpaddle = xball = 0
     if verbose:
         draw(grid, score)
     try:
@@ -80,7 +79,6 @@ def play(code, verbose):
                 if ident == 3:
                     xpaddle = x
                 elif ident == 4:
-                    ball_right = x > xball
                     xball = x
                 if verbose:
                     draw(grid, score)
