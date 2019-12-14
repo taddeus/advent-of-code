@@ -25,12 +25,12 @@ def ore_needed(reactions, fuel):
         for inp, ninp in inputs.items():
             produce(inp, ninp * multiplier)
         stash[outp] += noutp * multiplier - amount
-        produced[outp] += amount
+        needed[outp] += amount
 
     stash = defaultdict(int)
-    produced = defaultdict(int)
+    needed = defaultdict(int)
     produce('FUEL', fuel)
-    return produced['ORE']
+    return needed['ORE']
 
 def fuel_with_ore(reactions, ore):
     fuel = 0
