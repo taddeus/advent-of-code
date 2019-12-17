@@ -77,14 +77,15 @@ def find_path(grid):
             if turn:
                 yield turn
             yield str(forward)
-
-        if turn is None or forward > 0:
             turn = 'R'
             dx, dy = -dy, dx
         elif turn == 'R':
             # if right is blocked, turn left instead
             turn = 'L'
             dx, dy = -dx, -dy
+        elif turn is None:
+            turn = 'R'
+            dx, dy = -dy, dx
         else:
             # if left is blocked too, we're at the end
             break
