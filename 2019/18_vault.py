@@ -41,30 +41,6 @@ def build_graph(grid, w):
             dfs(i, None, 0)
     return graph
 
-def collect_keys_alone(graph):
-    totalkeys = sum(node.islower() for node in graph)
-    inf = 10000000000
-    work = [(0, totalkeys, '@0', '')]
-    best_dists = {('@0', ''): 0}
-
-    def visit(node, dist, keys, remkeys):
-        ident = node, keys
-        if best_dists.get(ident, inf) > dist:
-            best_dists[ident] = dist
-            heappush(work, (dist, remkeys, node, keys))
-
-    while work:
-        dist, remkeys, node, keys = heappop(work)
-        if remkeys == 0:
-            return dist
-
-        for nb, step in graph[node].items():
-            if nb.islower() and nb not in keys:
-                nbkeys = ''.join(sorted(keys + nb))
-                visit(nb, dist + step, nbkeys, remkeys - 1)
-            elif not nb.isupper() or nb.lower() in keys:
-                visit(nb, dist + step, keys, remkeys)
-
 def split_grid(grid, w):
     e = grid.index('@')
     grid[e - w - 1:e - w + 2] = '@#@'
@@ -107,14 +83,14 @@ def collect_from(graph, root, remkeys, keys, dist):
         work.append((newdist, newremkeys, node, newkeys))
 
 def collect_keys(graph):
-    entrances = tuple(node for node in graph if node[0] == '@')
-    totalkeys = sum(node.islower() for node in graph)
+    entrances = [node for node in graph if node[0] == '@']
+    nkeys = sum(node.islower() for node in graph)
     bots = []
     keys = ''
     dist = 0
 
     for entrance in entrances:
-        bot = collect_from(graph, entrance, totalkeys - len(keys), keys, dist)
+        bot = collect_from(graph, entrance, nkeys - len(keys), keys, dist)
         bots.append(bot)
         done, keys, dist = next(bot)
         if done:
@@ -127,10 +103,8 @@ def collect_keys(graph):
 
 # part 1
 grid, w = read_grid(sys.stdin)
-graph = build_graph(grid, w)
-print(collect_keys(graph))
+print(collect_keys(build_graph(grid, w)))
 
 # part 2
 split_grid(grid, w)
-graph = build_graph(grid, w)
-print(collect_keys(graph))
+print(collect_keys(build_graph(grid, w)))
