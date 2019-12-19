@@ -131,7 +131,7 @@ def make_subroutines(path):
     assert all(len(sub) <= 20 for sub in subs.values())
     return main, subs
 
-def rescue(program, main, subs, gridlen):
+def rescue(program, main, subs):
     lines = [main, subs['A'], subs['B'], subs['C'], 'n']
     inputs = list(map(ord, ('\n'.join(lines) + '\n')[::-1]))
     for output in run(program, inputs.pop, 10000):
@@ -147,4 +147,4 @@ print(calibrate(grid))
 path = list(find_path(grid))
 program[0] = 2
 main, subs = make_subroutines(path)
-print(rescue(program, main, subs, len(grid) * len(grid[0])))
+print(rescue(program, main, subs))
