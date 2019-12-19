@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from collections import deque
+from itertools import islice
 from operator import add, mul, lt, eq
 
 def run(p, get_input, memsize=0):
@@ -70,8 +71,8 @@ def find_box(program, size):
 
 # part 1
 program = list(map(int, sys.stdin.readline().split(',')))
-grid = scan(program, 50, 50)
-print(sum(sum(row) for row in grid))
+#print(sum(sum(row) for row in scan(program, 50, 50)))
+print(sum(min(r, 50) - l for l, r in islice(bounds(program), 50) if l < 50))
 
 # part 2
 bx, by = find_box(program, 100)
