@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from itertools import chain, combinations, islice
+from itertools import combinations, islice
 from math import gcd
 
 def cmp(a, b):
