@@ -3,7 +3,7 @@ import sys
 from intcode import read_program, run
 
 def run_springscript(program, script):
-    inputs = list(map(ord, reversed(script)))
+    inputs = list(map(ord, reversed(script.lstrip())))
     interp = run(program, inputs.pop, 1000)
     return next(out for out in interp if out > 128)
 
@@ -15,7 +15,7 @@ NOT C J
 OR T J
 AND D J
 WALK
-'''.lstrip()
+'''
 
 # Jump if A is a hole, or B/C are holes and D is reachable, but we don't end up
 # just before a hole at which we will have to jump but cannot:
@@ -33,7 +33,7 @@ AND D J
 NOT A T
 OR T J
 RUN
-'''.lstrip()
+'''
 
 program = read_program(sys.stdin)
 print(run_springscript(program, walkscript))
