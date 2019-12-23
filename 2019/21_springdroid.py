@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import sys
-from intcode import read_program, run
+from intcode import read_program, run_inputs
 
 def run_springscript(program, script):
-    inputs = list(map(ord, reversed(script.lstrip())))
-    interp = run(program, inputs.pop, 1000)
+    inputs = map(ord, script.lstrip())
+    interp = run_inputs(program, inputs)
     return next(out for out in interp if out > 128)
 
 # Jump if A or C is a hole and D is reachable:

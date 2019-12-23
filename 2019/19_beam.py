@@ -2,10 +2,10 @@
 import sys
 from collections import deque
 from itertools import islice
-from intcode import read_program, run
+from intcode import read_program, run_inputs
 
 def deploy_drone(program, x, y):
-    return next(run(program, [y, x].pop, 1000))
+    return next(run_inputs(program, [x, y]))
 
 def scan(program, w, h):
     return [[deploy_drone(program, x, y) for x in range(w)] for y in range(h)]

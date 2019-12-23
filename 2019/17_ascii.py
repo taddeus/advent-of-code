@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import sys
 from itertools import combinations, islice
-from intcode import read_program, run
+from intcode import read_program, run, run_inputs
 
 def read_grid(program):
-    output = ''.join(map(chr, run(program, None, 10000)))
+    output = ''.join(map(chr, run(program)))
     lines = output.rstrip().split('\n')
     def gen_lines():
         yield '.' * len(lines[0])
@@ -97,8 +97,8 @@ def make_subroutines(path):
 
 def rescue(program, main, subs):
     lines = [main, subs['A'], subs['B'], subs['C'], 'n']
-    inputs = list(map(ord, ('\n'.join(lines) + '\n')[::-1]))
-    for output in run(program, inputs.pop, 10000):
+    inputs = map(ord, ('\n'.join(lines) + '\n'))
+    for output in run_inputs(program, inputs):
         pass
     return output
 

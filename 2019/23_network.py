@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 import sys
-from intcode import read_program, run_iter
+from intcode import read_program, run
 
 def run_nat(program):
-    def boot(i):
-        nic = run_iter(program, 100)
-        assert next(nic) is None
-        return nic
-
-    nics, messages = zip(*[(boot(i), [i]) for i in range(50)])
+    nics, messages = zip(*[(run(program), [i]) for i in range(50)])
     natpack = 0, 0
 
+    for nic in nics:
+        assert next(nic) is None
+
     while True:
-        for i, (nic, msg) in enumerate(zip(nics, messages)):
+        for nic, msg in zip(nics, messages):
             msg.append(-1)
             while msg:
                 dst = nic.send(msg.pop(0))

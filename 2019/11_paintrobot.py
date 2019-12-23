@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import sys
-from intcode import read_program, run
+from intcode import read_program, run_getter
 
 def paint(firmware, color):
-    robot = run(firmware, lambda: color, 1000)
+    robot = run_getter(firmware, lambda: color)
     painted = set()
     white = set()
     x = y = 0

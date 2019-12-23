@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
 from time import sleep
-from intcode import read_program, run
+from intcode import read_program, run_getter
 
 NORTH, SOUTH, EAST, WEST = range(1, 5)
 WALL, SPACE, OXYGEN, UNKOWN = range(4)
@@ -30,7 +30,7 @@ def map_area(program):
 
     pos = 0, 0
     direction = NORTH
-    control = run(program, lambda: direction, 0)
+    control = run_getter(program, lambda: direction)
     mapped = {pos: SPACE}
     path = [(NORTH, pos)]
     oxygen_distance = None

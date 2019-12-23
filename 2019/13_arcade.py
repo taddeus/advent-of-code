@@ -2,7 +2,7 @@
 import sys
 from itertools import islice
 from time import sleep
-from intcode import read_program, run
+from intcode import read_program, run_getter
 
 def makegrid(game):
     x, y, ident = islice(game, 3)
@@ -27,7 +27,7 @@ def draw(grid, score):
     print('score:', score)
 
 def play(code, verbose):
-    game = run(code, lambda: xball - xpaddle, 1000)
+    game = run_getter(code, lambda: xball - xpaddle)
     grid, score = makegrid(game)
     xpaddle = xball = 0
     if verbose:
@@ -51,7 +51,7 @@ def play(code, verbose):
 
 # part 1
 code = read_program(sys.stdin)
-outp = list(run(code, lambda: 0, 1000))
+outp = list(run_getter(code, lambda: 0))
 print(outp[2::3].count(2))
 
 # part 2

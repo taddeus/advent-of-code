@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
-from intcode import read_program, run
+from intcode import read_program, run_inputs
 
 program = read_program(sys.stdin)
-print(next(run(program, [1].pop, 10000)))
-print(next(run(program, [2].pop, 10000)))
+print(next(run_inputs(program, [1])))
+print(next(run_inputs(program, [2])))
