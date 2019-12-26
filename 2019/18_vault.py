@@ -64,7 +64,7 @@ def collect_from(graph, root, remkeys, keys, dist):
         while work:
             dist, remkeys, node, keys = heappop(work)
             if remkeys == 0:
-                yield True, keys, dist
+                yield keys, dist
                 return
 
             if remkeys < best[1] or (remkeys == best[1] and dist < best[0]):
@@ -78,7 +78,7 @@ def collect_from(graph, root, remkeys, keys, dist):
                     visit(nb, dist + step, keys, remkeys)
 
         dist, remkeys, node, keys = best
-        newkeys, newdist = yield False, keys, dist
+        newkeys, newdist = yield keys, dist
         newremkeys = remkeys - (len(newkeys) - len(keys))
         work.append((newdist, newremkeys, node, newkeys))
 
@@ -92,13 +92,13 @@ def collect_keys(graph):
     for entrance in entrances:
         bot = collect_from(graph, entrance, nkeys - len(keys), keys, dist)
         bots.append(bot)
-        done, keys, dist = next(bot)
-        if done:
+        keys, dist = next(bot)
+        if len(keys) == nkeys:
             return dist
 
     for bot in cycle(bots):
-        done, keys, dist = bot.send((keys, dist))
-        if done:
+        keys, dist = bot.send((keys, dist))
+        if len(keys) == nkeys:
             return dist
 
 # part 1
