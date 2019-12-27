@@ -23,7 +23,7 @@ def draw(mapped, robot):
     print('\033c', end='')
     for y in range(miny, maxy + 1):
         print(''.join(draw_pos((x, y)) for x in range(minx, maxx + 1)))
-    sleep(.001)
+    sleep(.005)
 
 def map_area(program):
     reverse_dir = [SOUTH, NORTH, WEST, EAST]
