@@ -40,11 +40,9 @@ def shortest_path(source, dest):
             return dist
 
 def reachable_in(source, maxdist):
-    count = 0
-    for node, dist in uniform_cost_search(source):
+    for count, (node, dist) in enumerate(uniform_cost_search(source)):
         if dist > maxdist:
             return count
-        count += 1
 
 print(shortest_path((1, 1), (31, 39)))
 print(reachable_in((1, 1), 50))
