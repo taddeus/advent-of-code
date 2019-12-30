@@ -14,11 +14,9 @@ def shortest_paths(grid, w):
         explored = {start}
         while work:
             loc, dist = work.popleft()
-
             node = grid[loc]
             if node.isdigit():
                 dists[int(node)] = dist
-
             for nb in (loc - 1, loc + 1, loc - w, loc + w):
                 if grid[nb] != '#' and nb not in explored:
                     explored.add(nb)
@@ -32,8 +30,7 @@ def visit_steps(dists, back):
     dists = shortest_paths(grid, w)
     best = 100000000
     for path in permutations(range(1, len(dists))):
-        total = 0
-        prev = 0
+        total = prev = 0
         for loc in path:
             total += dists[prev][loc]
             prev = loc
@@ -41,7 +38,6 @@ def visit_steps(dists, back):
             total += dists[prev][0]
         best = min(best, total)
     return best
-
 
 grid, w = read_grid(sys.stdin)
 dists = shortest_paths(grid, w)
