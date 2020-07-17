@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 import sys
 import json
-import re
-from pprint import pprint
 
 def jsum(data, ignore=None):
     if isinstance(data, int):

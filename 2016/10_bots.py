@@ -15,10 +15,6 @@ class Simulation:
         self = cls()
         dests = {'bot': self.bots, 'output': self.outputs}
 
-        def set_dest(mapping, bot, ty, nr):
-            dest = (self.bots if ty == 'bot' else self.outputs)
-            mapping[bot] = (self.outputs, int(nr))
-
         for line in f:
             words = line.split()
             if words[0] == 'value':

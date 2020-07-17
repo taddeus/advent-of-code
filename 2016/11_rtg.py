@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-import re
 from collections import namedtuple
-from itertools import chain
 from queue import PriorityQueue
 
 State = namedtuple('State', 'floors elevator')
@@ -73,7 +71,6 @@ def min_steps(initial):
     worklist = PriorityQueue()
     seen = {initial}
     worklist.put((get_score(initial), 0, initial))
-    nprocessed = 0
     while not worklist.empty():
         score, steps, state = worklist.get()
         if score == (0, 0):
