@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 from heapq import heapify, heappush, heappop
-depth = 6084
-tx, ty = target = 14, 709
-#depth = 510
-#tx, ty = target = 10, 10
 
-def scan(pad):
+def scan(depth, pad, tx, ty):
     def erode(geo_index):
         return (geo_index + depth) % 20183
 
@@ -46,10 +42,10 @@ def shortest_path(graph, source, target):
                     dist[v] = alt
                     heappush(Q, (alt, v))
 
-def rescue(grid, w):
+def rescue(grid, w, tx, ty):
     # approach:
     # - build graph with (x, y, tool) tuples as vertices
-    # - record weighted edges including tolao witching between vertices where
+    # - record weighted edges including tool switching between vertices where
     #   switching is allowed
     # - do Dijkstra on the result
     h = len(grid) // w
@@ -83,10 +79,7 @@ def rescue(grid, w):
     # we start and end with a torch so in the first of 3 lists
     return shortest_path(graph, 0, ty * w + tx)
 
-grid, w = scan(15)
-
-# part 1
+depth, tx, ty = 6084, 14, 709
+grid, w = scan(depth, 15, tx, ty)
 print(sum(sum(grid[y * w:y * w + tx + 1]) for y in range(ty + 1)))
-
-# part 2
-print(rescue(grid, w))
+print(rescue(grid, w, tx, ty))
