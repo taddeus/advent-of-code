@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import sys
-from functools import reduce
 
 def parse(f):
     cur = []
@@ -13,5 +12,5 @@ def parse(f):
     yield cur
 
 groups = list(parse(sys.stdin))
-print(sum(len(reduce(set.union, map(set, g))) for g in groups))
-print(sum(len(reduce(set.intersection, map(set, g))) for g in groups))
+print(sum(len(set.union(*map(set, g))) for g in groups))
+print(sum(len(set.intersection(*map(set, g))) for g in groups))
