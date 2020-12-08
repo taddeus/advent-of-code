@@ -8,8 +8,11 @@ def parse(f):
 
 def run(program, acc=0):
     ip = 0
-    yield ip, acc
+    seen = [False] * len(program)
     while ip < len(program):
+        if seen[ip]:
+            return False, acc
+        seen[ip] = True
         opcode, arg = program[ip]
         if opcode == 'acc':
             acc += arg
@@ -18,29 +21,18 @@ def run(program, acc=0):
         else:
             assert opcode == 'nop'
         ip += 1
-        yield ip, acc
+    return True, acc
 
-def acc_after_one_iteration(program):
-    seen = set()
-    return next(acc for ip, acc in run(program) if ip in seen or seen.add(ip))
-
-def mutate(program):
+def patch(program):
     change = {'nop': 'jmp', 'jmp': 'nop'}
     for i, (opcode, arg) in enumerate(program):
         if opcode != 'acc':
             program[i] = change[opcode], arg
-            yield program
+            term, acc = run(program)
+            if term:
+                return acc
             program[i] = opcode, arg
 
-def patch(program, maxn):
-    for p in mutate(program):
-        for n, (ip, acc) in zip(range(maxn), run(p)):
-            pass
-        if n < maxn - 1:
-            return program
-
 program = list(parse(sys.stdin))
-print(acc_after_one_iteration(program))
-for ip, acc in run(patch(program, 1000)):
-    pass
-print(acc)
+print(run(program)[1])
+print(patch(program))
