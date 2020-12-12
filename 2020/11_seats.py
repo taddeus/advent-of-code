@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 import sys
 
-FLOOR, EMPTY, OCCUPIED = range(3)
+FLOOR, EMPTY, OCCUPIED = '.L#'
 
 def parse(f):
-    state = []
-    for line in f:
-        state += ['.L#'.index(c) for c in line.rstrip()]
-        w = len(line.rstrip())
-    return state, w
+    grid = f.read().rstrip()
+    return grid.replace('\n', ''), grid.find('\n')
 
-def changes(state, w, tolerance, see_far):
+def evolve(state, w, tolerance, see_far):
     h = len(state) // w
 
     def see_occupied(x, y, dx, dy):
@@ -26,23 +23,21 @@ def changes(state, w, tolerance, see_far):
     def occupied_nb(i):
         y, x = divmod(i, w)
         return sum(see_occupied(x, y, dx, dy)
-                   for dx in (-1, 0, 1)
-                   for dy in (-1, 0, 1)
-                   if dx or dy)
+                   for dx in (-1, 0, 1) for dy in (-1, 0, 1) if dx or dy)
 
     for i, seat in enumerate(state):
         if seat == EMPTY and occupied_nb(i) == 0:
-            yield i, OCCUPIED
+            yield OCCUPIED
         elif seat == OCCUPIED and occupied_nb(i) >= tolerance:
-            yield i, EMPTY
+            yield EMPTY
+        else:
+            yield seat
 
-def stabilize(state, w, tolerance, see_far):
-    state = list(state)
-    changeset = list(changes(state, w, tolerance, see_far))
-    while changeset:
-        for i, seat in changeset:
-            state[i] = seat
-        changeset[::] = changes(state, w, tolerance, see_far)
+def stabilize(state, *args):
+    prev = None
+    while state != prev:
+        prev = state
+        state = ''.join(evolve(state, *args))
     return state
 
 state, w = parse(sys.stdin)
