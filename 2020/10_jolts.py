@@ -1,35 +1,20 @@
 #!/usr/bin/env python3
 import sys
 from functools import lru_cache
-from itertools import combinations
-
-def diffs(adapters):
-    prev = 0
-    for jolts in adapters:
-        yield jolts - prev
-        prev = jolts
-    yield 3
 
 def mul_diffs(adapters):
-    d = list(diffs(adapters))
-    return d.count(1) * d.count(3)
+    seq = [0] + sorted(adapters)
+    diffs = [seq[i + 1] - seq[i] for i in range(len(seq) - 1)] + [3]
+    return diffs.count(1) * diffs.count(3)
 
 def arrangements(adapters):
-    graph = {}
-    for a, b in combinations([0] + adapters, 2):
-        if b - a <= 3:
-            graph.setdefault(a, []).append(b)
+    @lru_cache(maxsize=4)
+    def ways(jo):
+        return jo in exists and \
+               (jo <= 3) + ways(jo - 1) + ways(jo - 2) + ways(jo - 3)
+    exists = set(adapters)
+    return ways(max(adapters))
 
-    @lru_cache(maxsize=None)
-    def walk(node):
-        if node == adapters[-1]:
-            return 1
-        elif not graph[node]:
-            return 0
-        return sum(map(walk, graph[node]))
-
-    return walk(0)
-
-adapters = sorted(map(int, sys.stdin))
+adapters = list(map(int, sys.stdin))
 print(mul_diffs(adapters))
 print(arrangements(adapters))
