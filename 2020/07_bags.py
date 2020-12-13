@@ -7,10 +7,10 @@ def parse(f):
     contained_by = {}
     for line in f:
         parent, children = line.split(' bags contain ')
-        contains[parent] = parent_contains = {}
+        contains[parent] = parent_contains = []
         for match in re.findall(r'\d+ \w+ \w+', children):
             num, child = match.split(' ', 1)
-            parent_contains[child] = int(num)
+            parent_contains.append((child, int(num)))
             contained_by.setdefault(child, []).append(parent)
     return contains, contained_by
 
@@ -22,7 +22,7 @@ def containers(color, contained_by):
     return set(traverse(color))
 
 def count(color, contains):
-    return sum(n + n * count(c, contains) for c, n in contains[color].items())
+    return sum(n + n * count(c, contains) for c, n in contains[color])
 
 contains, contained_by = parse(sys.stdin)
 print(len(containers('shiny gold', contained_by)))
