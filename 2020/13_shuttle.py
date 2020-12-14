@@ -27,6 +27,13 @@ def sync(buses):
             diffs = [(diff, bus) for diff, bus in diffs if bus not in synced]
     return t + mindiff
 
+def sync_chinese_remainder(buses):
+    indices = [i for i, bus in enumerate(buses) if bus]
+    diff = indices[-1] - indices[0]
+    prod = reduce(lambda a, b: a * b, filter(None, buses))
+    return sum((diff - i) * pow(prod // n, n - 2, n) * prod // n
+               for i, n in enumerate(buses) if n) % prod - diff
+
 arrival, buses = parse(sys.stdin)
 print(earliest_bus(arrival, buses))
 print(sync(buses))
