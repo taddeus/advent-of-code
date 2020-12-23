@@ -29,9 +29,9 @@ def patch(program):
         if opcode in change:
             program[i] = change[opcode], arg
             term, acc = run(program)
-            program[i] = opcode, arg
             if term:
                 return acc
+            program[i] = opcode, arg
 
 program = list(parse(sys.stdin))
 print(run(program)[1])
