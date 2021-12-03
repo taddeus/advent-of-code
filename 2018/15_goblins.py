@@ -2,6 +2,7 @@
 import sys
 from operator import attrgetter
 from heapq import heappush, heappop
+from time import sleep
 
 SPACE, WALL = 0, 1
 GOBLINS, ELVES = 0, 1
@@ -38,12 +39,12 @@ class Unit:
         return len(enemies) > 0
 
     def move(self):
-        step = self.step_to_nearest_enemy()
-        if step is None:
+        dest = self.step_to_nearest_enemy()
+        if dest is None:
             return False
         grid[self.pos] = SPACE
-        grid[step] = self
-        self.pos = step
+        grid[dest] = self
+        self.pos = dest
         return True
 
     def step_to_nearest_enemy(self):
@@ -84,7 +85,7 @@ class Unit:
                 if u not in shortest or entry < shortest[u]:
                     shortest[u] = entry
 
-        if len(shortest):
+        if shortest:
             return min(shortest.values())[-1]
 
 class BattleLost(Exception):
@@ -128,12 +129,12 @@ def show():
             line += '   ' + ', '.join(hps)
         print(line)
 
-def simulate(ap, verbose):
+def simulate(ap, delay):
     global units
     rounds = 0
     clear = '\033c'
     try:
-        if verbose:
+        if delay:
             print(clear + 'after 0 rounds with', ap, 'ap:')
             show()
         while True:
@@ -142,11 +143,12 @@ def simulate(ap, verbose):
                     unit.fight()
             units = sorted((u for u in units if u.hp > 0), key=attrgetter('pos'))
             rounds += 1
-            if verbose:
+            if delay:
                 print(clear + 'after', rounds, 'rounds with', ap, 'ap:')
                 show()
+                sleep(delay)
     except BattleLost as lost:
-        if verbose:
+        if delay:
             print(clear + 'after', rounds, 'rounds with', ap, 'ap:')
             show()
         return lost.team, rounds, sum(u.hp for u in units if u.hp > 0)
@@ -172,19 +174,19 @@ def report(loser, rounds, hp, ap):
 
 # part 1
 elf_ap = 3
-verbose = len(sys.argv) == 2 and sys.argv[-1] == '-v'
+delay = int(sys.argv[1]) / 1000 if len(sys.argv) == 2 else None
 startgrid, w = parse(sys.stdin)
 grid, units = reset(elf_ap)
-startelves = sum(1 for u in units if u.team == ELVES)
-outcome = outcome3 = simulate(elf_ap, verbose)
+startelves = sum(u.team == ELVES for u in units)
+outcome = outcome3 = simulate(elf_ap, delay)
 
 # part 2
 numelves = 0
 while numelves != startelves:
     elf_ap += 1
     grid, units = reset(elf_ap)
-    outcome = simulate(elf_ap, verbose)
-    numelves = sum(1 for u in units if u.team == ELVES)
+    outcome = simulate(elf_ap, delay)
+    numelves = sum(u.team == ELVES for u in units)
 
 report(*outcome3, 3)
 print()

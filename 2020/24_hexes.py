@@ -21,7 +21,7 @@ def flip(coords):
     tiles = {}
     for xy in coords:
         tiles[xy] = not tiles.get(xy, False)
-    return list(xy for xy, black in tiles.items() if black)
+    return [xy for xy, black in tiles.items() if black]
 
 def evolve(black, days):
     black = set(black)
