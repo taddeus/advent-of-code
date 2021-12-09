@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 def move(cups, moves, pad):
-    nex = [i + 1 for i in range(pad + 1)]
+    nex = list(range(1, pad + 2))
     for i, label in enumerate(cups[:-1]):
         nex[label] = cups[i + 1]
     head = cups[0]
@@ -15,9 +15,9 @@ def move(cups, moves, pad):
         nex[head] = nex[nex[nex[rem]]]
         allrem = rem, nex[rem], nex[nex[rem]]
 
-        dest = head - 1 if head > 1 else pad
+        dest = head - 1 or pad
         while dest in allrem:
-            dest = pad if dest == 1 else dest - 1
+            dest = dest - 1 or pad
 
         nex[nex[nex[rem]]] = nex[dest]
         nex[dest] = rem
