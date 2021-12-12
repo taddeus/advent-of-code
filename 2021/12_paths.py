@@ -5,23 +5,24 @@ def parse(f):
     graph = {}
     for line in f:
         a, b = line.rstrip().split('-')
-        graph.setdefault(a, []).append(b)
-        graph.setdefault(b, []).append(a)
+        if b != 'start' and a != 'end':
+            graph.setdefault(a, []).append(b)
+        if a != 'start' and b != 'end':
+            graph.setdefault(b, []).append(a)
     return graph
 
 def paths(graph, may_dup):
-    work = [(('start',), not may_dup)]
+    work = [('start', {'start'}, not may_dup)]
     distinct = 0
     while work:
-        path, dup = work.pop()
-        if path[-1] == 'end':
-            distinct += 1
-        else:
-            for nb in graph[path[-1]]:
-                if nb.isupper() or nb not in path:
-                    work.append((path + (nb,), dup))
-                elif not dup and nb != 'start':
-                    work.append((path + (nb,), True))
+        prev, visited, dup = work.pop()
+        for nb in graph[prev]:
+            if nb == 'end':
+                distinct += 1
+            elif nb.isupper() or nb not in visited:
+                work.append((nb, visited | {nb}, dup))
+            elif not dup:
+                work.append((nb, visited, True))
     return distinct
 
 graph = parse(sys.stdin)
