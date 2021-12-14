@@ -12,17 +12,14 @@ def grow(polymer, rules, steps):
     pairs = Counter(polymer[i:i + 2] for i in range(len(polymer) - 1))
 
     for step in range(steps):
-        new = Counter()
-        for pair, num in pairs.items():
-            if pair in rules:
+        for pair, num in list(pairs.items()):
+            if num and pair in rules:
                 a, b = pair
                 c = rules[pair]
-                new[a + c] += num
-                new[c + b] += num
+                pairs[pair] -= num
+                pairs[a + c] += num
+                pairs[c + b] += num
                 elements[c] += num
-            else:
-                new[pair] = num
-        pairs = new
 
     return max(elements.values()) - min(elements.values())
 
