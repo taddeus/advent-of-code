@@ -25,11 +25,11 @@ ALL_ROTATIONS = (
     rotz, rotz, rotz,
     rotx,
     rotz, rotz, rotz,
-    lambda x, y, z: rotx(*rotz(*rotz(x, y, z))),
+    lambda x, y, z: (-x, -z, -y),
     rotz, rotz, rotz,
     rotx,
     rotz, rotz, rotz,
-    lambda x, y, z: rotx(*rotx(*rotx(x, y, z))),
+    lambda x, y, z: (x, z, -y),
     rotz, rotz, rotz,
 )
 
@@ -39,24 +39,21 @@ def rotations(scan):
         scan = list(starmap(rot, scan))
         yield scan
 
-def largest_intersection(scan1, scan2):
-    return Counter((x2 - x1, y2 - y1, z2 - z1)
-                    for x1, y1, z1 in scan1
-                    for x2, y2, z2 in scan2).most_common(1)[0]
-
 def move(scan, dx, dy, dz):
     return [(x + dx, y + dy, z + dz) for x, y, z in scan]
 
 def find_scanner(base, rotated_scans):
     for scan in rotated_scans:
-        diff, count = largest_intersection(scan, base)
+        [(diff, count)] = Counter((x2 - x1, y2 - y1, z2 - z1)
+                                  for x1, y1, z1 in scan
+                                  for x2, y2, z2 in base).most_common(1)
         if count >= 12:
             return diff, move(scan, *diff)
     return None, None
 
 def join(scans):
-    joined = set(scans[0])
-    remaining = deque(list(rotations(scan)) for scan in scans[1:])
+    joined = set(next(scans))
+    remaining = deque(list(rotations(scan)) for scan in scans)
     scanners = [(0, 0, 0)]
 
     while remaining:
@@ -74,7 +71,6 @@ def max_distance(scanners):
     return max(abs(x2 - x1) + abs(y2 - y1) + abs(z2 - z1)
                for (x1, y1, z1), (x2, y2, z2) in combinations(scanners, 2))
 
-scans = list(parse(sys.stdin))
-joined, scanners = join(scans)
+joined, scanners = join(parse(sys.stdin))
 print(len(joined))
 print(max_distance(scanners))

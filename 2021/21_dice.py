@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys
-from itertools import cycle
+from itertools import cycle, product
 from functools import lru_cache
 
 def move(pos, score, amount):
@@ -24,16 +24,14 @@ def play(a, b):
     @lru_cache(maxsize=None)
     def wins(a, b):
         awins = bwins = 0
-        for x in range(1, 4):
-            for y in range(1, 4):
-                for z in range(1, 4):
-                    pos, score = roll_a = move(*a, x + y + z)
-                    if score >= 21:
-                        awins += 1
-                    else:
-                        roll_bwins, roll_awins = wins(b, roll_a)
-                        awins += roll_awins
-                        bwins += roll_bwins
+        for rolls in product(range(1, 4), repeat=3):
+            pos, score = roll_a = move(*a, sum(rolls))
+            if score >= 21:
+                awins += 1
+            else:
+                roll_bwins, roll_awins = wins(b, roll_a)
+                awins += roll_awins
+                bwins += roll_bwins
         return awins, bwins
     return max(wins((a, 0), (b, 0)))
 
