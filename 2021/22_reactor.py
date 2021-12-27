@@ -28,25 +28,25 @@ class Cuboid:
 
     def split(self, point):
         for start, end in split(self.start, self.end, point):
-            cuboid = Cuboid(self.on, start, end)
-            if cuboid.size():
-                self.children.append(cuboid)
+            child = Cuboid(self.on, start, end)
+            if child.size():
+                self.children.append(child)
 
-    def toggle(self, cuboid):
-        if cuboid.size():
+    def toggle(self, subset):
+        if subset.size():
             if self.children:
                 for child in self.children:
-                    child.toggle(cuboid.clamp(child))
-            elif cuboid.on != self.on:
-                if cuboid.start == self.start:
-                    if cuboid.end == self.end:
-                        self.on = cuboid.on
+                    child.toggle(subset.clamp(child))
+            elif subset.on != self.on:
+                if subset.start == self.start:
+                    if subset.end == self.end:
+                        self.on = subset.on
                     else:
-                        self.split(cuboid.end)
-                        self.children[0].on = cuboid.on
+                        self.split(subset.end)
+                        self.children[0].on = subset.on
                 else:
-                    self.split(cuboid.start)
-                    self.children[-1].toggle(cuboid)
+                    self.split(subset.start)
+                    self.children[-1].toggle(subset)
 
     def size(self):
         dx, dy, dz = (r - l for l, r in zip(self.start, self.end))
@@ -57,9 +57,9 @@ class Cuboid:
             return sum(child.count_on() for child in self.children)
         return self.on * self.size()
 
-    def clamp(self, cuboid):
-        start = tuple(starmap(clamp, zip(self.start, cuboid.start, cuboid.end)))
-        end = tuple(starmap(clamp, zip(self.end, cuboid.start, cuboid.end)))
+    def clamp(self, to):
+        start = tuple(starmap(clamp, zip(self.start, to.start, to.end)))
+        end = tuple(starmap(clamp, zip(self.end, to.start, to.end)))
         return Cuboid(self.on, start, end)
 
 def parse(line):
