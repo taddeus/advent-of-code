@@ -5,15 +5,12 @@ def parse(content):
     return list(content.replace('\n', '')), content.find('\n')
 
 def move(grid, w):
-    h = len(grid) // w
-
     def right(i):
         y, x = divmod(i, w)
         return y * w + (x + 1) % w
 
     def down(i):
-        y, x = divmod(i, w)
-        return (y + 1) % h * w + x
+        return (i + w) % len(grid)
 
     def move_axis(match, forward):
         can_move = [src for src, cell in enumerate(grid)
