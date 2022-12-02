@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 python=${PYTHON:-python3}
 trap exit SIGINT
-for dir in "$@"; do
-    i=1
-    for f in $dir/[012]*.py
-    do
-        echo "-- dir $dir -- problem $i ----------------------------"
-        cmd="`which time` -f 'elapsed: %E' $python $f"
-        if [ -e $dir/input/$i ]
-        then cmd+=" < $dir/input/$i"
-        fi
-        eval $cmd
+for year in "$@"; do
+    day=1
+    for solution in $year/[012]*.py do
+        echo "-- year $year -- day $day -------------------------------"
+        [ -e $year/input/$day ] && inp=$year/input/$day || inp=/dev/null
+        `which time` -f 'elapsed: %E' "$python" $solution < $inp
         echo
-        i=$((i + 1))
+        day=$((day + 1))
     done
 done
