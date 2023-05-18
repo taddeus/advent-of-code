@@ -20,11 +20,11 @@ def drop_rocks(shifts, n):
         y = height + 3
         for shift_id, shift in shifts:
             if all(0 <= x + dx + shift < 7
-                and (x + dx + shift, y + dy) not in tower
-                for dx, dy in rock):
+                   and (x + dx + shift, y + dy) not in tower
+                   for dx, dy in rock):
                 x += shift
             if any((x + dx, y + dy - 1) in tower or y == 0
-                for dx, dy in rock):
+                   for dx, dy in rock):
                 return x, y, shift_id
             y -= 1
 
