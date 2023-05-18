@@ -21,8 +21,8 @@ def exterior_surface(voxels):
     visit = list(outside)
     while visit:
         for nb in neighbors(*visit.pop()):
-            nx, ny, nz = nb
-            if -1 <= nx <= w and -1 <= ny <= h and -1 <= nz <= d \
+            x, y, z = nb
+            if -1 <= x <= w and -1 <= y <= h and -1 <= z <= d \
                     and nb not in outside and nb not in voxels:
                 outside.add(nb)
                 visit.append(nb)
