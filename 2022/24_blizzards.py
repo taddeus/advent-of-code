@@ -25,7 +25,6 @@ def move(blizzards, w, h):
 
 def walk(src, dst, step, blizzard_movement, w, h):
     start = src, step
-    visited = {start}
     dist = {start: 0}
     work = [(0, start)]
     endx, endy = dst
@@ -42,13 +41,11 @@ def walk(src, dst, step, blizzard_movement, w, h):
             if (0 <= nx < w and 0 <= ny < h and (nx, ny) not in bliz) or \
                     (nx == w - 1 and ny == h) or (nx == 0 and ny == -1):
                 nb = (nx, ny), step + 1
-                if nb not in visited:
-                    visited.add(nb)
-                    alt = dist[current] + 1
-                    if alt < dist.get(nb, 1000000):
-                        dist[nb] = alt
-                        estimate = abs(endx - nx) + abs(endy - ny)
-                        heappush(work, (alt + estimate, nb))
+                nbdist = dist[current] + 1
+                if nbdist < dist.get(nb, 1000000):
+                    dist[nb] = nbdist
+                    estimate = abs(endx - nx) + abs(endy - ny)
+                    heappush(work, (nbdist + estimate, nb))
 
 blizzards, w, h = parse(sys.stdin)
 blizzard_movement = list(move(blizzards, w, h))
