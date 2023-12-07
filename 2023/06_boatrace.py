@@ -2,7 +2,6 @@
 import sys
 import re
 from functools import reduce
-from itertools import starmap
 from math import ceil, sqrt
 from operator import mul
 
@@ -16,5 +15,5 @@ def wins(time, distance):
     return int((time + d) / 2) - ceil((time - d) / 2) + 1 - 2 * (d % 1 == 0)
 
 times, distances = (re.findall(r'\d+', line) for line in sys.stdin)
-print(reduce(mul, starmap(wins, zip(map(int, times), map(int, distances)))))
+print(reduce(mul, (wins(int(t), int(d)) for t, d in zip(times, distances))))
 print(wins(int(''.join(times)), int(''.join(distances))))
