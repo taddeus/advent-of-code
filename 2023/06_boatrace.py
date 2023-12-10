@@ -10,7 +10,7 @@ def wins(time, distance):
     # solve: -hold^2 + time*hold - distance = 0
     #        hold = (time +- sqrt(time^2 - 4 * distance)) / 2
     #             = (time +- d) / 2
-    # solution: (time - d) / 2 < hold < (time - d) / 2
+    # solution: (time - d) / 2 < hold < (time + d) / 2
     d = sqrt(time ** 2 - 4 * distance)
     return int((time + d) / 2) - ceil((time - d) / 2) + 1 - 2 * (d % 1 == 0)
 
