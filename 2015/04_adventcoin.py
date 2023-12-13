@@ -1,16 +1,7 @@
 #!/usr/bin/env python3
 from hashlib import md5
+from itertools import count
 
-key = 'iwrupvqb'
-
-d = b'xxx'
-i = -1
-while d[0] + d[1] > 0 or d[2] > 0xf:
-    i += 1
-    d = md5((key + str(i)).encode('ascii')).digest()
-print(i)
-
-while sum(d[:3]) > 0:
-    i += 1
-    d = md5((key + str(i)).encode('ascii')).digest()
-print(i)
+hashes = ((i, md5(b'iwrupvqb%d' % i).hexdigest()) for i in count(0))
+print(next(i for i, h in hashes if h[:5] == '00000'))
+print(next(i for i, h in hashes if h[:6] == '000000'))
