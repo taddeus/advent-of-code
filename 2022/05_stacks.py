@@ -1,33 +1,18 @@
 #!/usr/bin/env python3
 import sys
+from itertools import islice, takewhile
 
 def parse(f):
-    stacks = [[] for i in range(9)]
-    moves = []
-
-    for line in f:
-        if line.startswith(' 1 '):
-            break
-        for i, crate in enumerate(line[1::4]):
-            if crate != ' ':
-                stacks[i].append(ord(crate))
-    for stack in stacks:
-        stack.reverse()
-
-    next(f)
-    for line in f:
-        num, src, dst = map(int, line.split()[1::2])
-        moves.append((num, src - 1, dst - 1))
-
-    return stacks, moves
+    rows = (l[1::4] for l in takewhile(lambda l: not l.startswith(' 1'), f))
+    yield [[ord(c) for c in reversed(col) if c != ' '] for col in zip(*rows)]
+    yield [(int(num), int(src) - 1, int(dst) - 1)
+           for (_, num, _, src, _, dst) in map(str.split, islice(f, 1, None))]
 
 def move(stacks, moves, multipop):
     for num, src, dst in moves:
         popped = stacks[src][-num:]
         del stacks[src][-num:]
-        if not multipop:
-            popped.reverse()
-        stacks[dst].extend(popped)
+        stacks[dst].extend(popped if multipop else reversed(popped))
     return ''.join(chr(stack[-1]) for stack in stacks)
 
 stacks, moves = parse(sys.stdin)

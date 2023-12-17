@@ -2,6 +2,7 @@
 import sys
 from operator import add, mul, pow
 from functools import reduce
+from heapq import nlargest
 
 def parse(f):
     for line in f:
@@ -24,7 +25,7 @@ def business(monkeys, rounds, divisor):
                 queues[false if worry % div else true].append(worry)
             inspects[i] += len(items)
             items.clear()
-    return mul(*sorted(inspects)[-2:])
+    return mul(*nlargest(2, inspects))
 
 monkeys = list(parse(sys.stdin))
 print(business(monkeys, 20, 3))

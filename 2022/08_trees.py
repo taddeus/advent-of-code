@@ -1,47 +1,29 @@
 #!/usr/bin/env python3
 import sys
 
-def parse(f):
-    first = next(f).rstrip()
-    grid = list(map(int, first))
-    for line in f:
-        grid.extend(map(int, line.rstrip()))
-    return grid, len(first)
+def spread(grid, w, i):
+    yield range(i + 1, i - i % w + w)
+    yield range(i - 1, i - i % w - 1, -1)
+    yield range(i + w, len(grid), w)
+    yield range(i - w, -1, -w)
 
-def visible(grid, size):
-    vis = [False] * len(grid)
+def visible(grid, w):
+    return sum(any(all(grid[j] < tree for j in d) for d in spread(grid, w, i))
+               for i, tree in enumerate(grid))
 
-    def walk(start, step):
-        prev = -1
-        for i in range(start, start + step * size, step):
-            tree = grid[i]
-            if tree > prev:
-                vis[i] = True
-                prev = tree
-
-    for i in range(size):
-        walk(i, size)
-        walk(len(grid) - i - 1, -size)
-        walk(i * size, 1)
-        walk((i + 1) * size - 1, -1)
-
-    return sum(vis)
-
-def score(grid, size, i):
-    def walk(step, stop):
+def score(grid, w, i):
+    def walk(direction):
         vis = 0
-        for j in range(i + step, stop, step):
+        for j in direction:
             vis += 1
             if grid[j] >= grid[i]:
                 break
-            j += step
         return vis
+    right, left, down, up = map(iter, spread(grid, w, i))
+    return walk(right) * walk(left) * walk(down) * walk(up)
 
-    return walk(1, i + size - i % size) \
-         * walk(-1, i - i % size - 1) \
-         * walk(size, len(grid)) \
-         * walk(-size, -1)
-
-grid, size = parse(sys.stdin)
-print(visible(grid, size))
-print(max(score(grid, size, i) for i in range(len(grid))))
+inp = sys.stdin.read()
+w = inp.index('\n')
+grid = [int(n) for n in inp if n != '\n']
+print(visible(grid, w))
+print(max(score(grid, w, i) for i, tree in enumerate(grid)))
