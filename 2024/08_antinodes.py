@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import sys
-from functools import partial
-from itertools import chain, permutations, starmap
+from itertools import chain, permutations
 
 def parse(f):
     antennas = {}
@@ -16,17 +15,13 @@ def subtract_pairs(antennas):
         for (xa, ya), (xb, yb) in permutations(locs, 2):
             yield xb, yb, xb - xa, yb - ya
 
-def antinodes1(w, h, x, y, dx, dy):
-    if 0 <= x + dx < w and 0 <= y + dy < h:
-        yield x + dx, y + dy
-
-def antinodes2(w, h, x, y, dx, dy):
+def draw_line(x, y, dx, dy, w, h):
     while 0 <= x < w and 0 <= y < h:
         yield x, y
         x += dx
         y += dy
 
 antennas, w, h = parse(sys.stdin)
-pairs = list(subtract_pairs(antennas))
-print(len(set(chain.from_iterable(starmap(partial(antinodes1, w, h), pairs)))))
-print(len(set(chain.from_iterable(starmap(partial(antinodes2, w, h), pairs)))))
+antinodes = [list(draw_line(*vec, w, h)) for vec in subtract_pairs(antennas)]
+print(len(set(a[1] for a in antinodes if len(a) > 1)))
+print(len(set(chain.from_iterable(antinodes))))
