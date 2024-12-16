@@ -6,13 +6,13 @@ def change(stone):
     if stone == 0:
         yield 1
     else:
-        s = str(stone)
-        l = len(s)
-        if l % 2 == 0:
-            yield int(s[:l // 2])
-            yield int(s[l // 2:])
-        else:
+        digits = str(stone)
+        mid, odd = divmod(len(digits), 2)
+        if odd:
             yield stone * 2024
+        else:
+            yield int(digits[:mid])
+            yield int(digits[mid:])
 
 def blink(counts, times):
     for _ in range(times):
