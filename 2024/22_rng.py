@@ -27,10 +27,11 @@ def sequence_prices(num):
     return seen
 
 def max_prices(initials):
-    all_seq_prices = list(map(sequence_prices, initials))
-    sequences = set(chain.from_iterable(all_seq_prices))
-    return max(sum(seq_prices.get(seq, 0) for seq_prices in all_seq_prices)
-               for seq in sequences)
+    combined = {}
+    for num in initials:
+        for diffs, price in sequence_prices(num).items():
+            combined[diffs] = combined.get(diffs, 0) + price
+    return max(combined.values())
 
 def nth(num, n):
     for _ in range(n):
